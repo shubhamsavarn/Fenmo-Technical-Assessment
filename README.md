@@ -25,15 +25,27 @@ That's it. One command brings up PostgreSQL, Spring Boot, and Nginx.
 
 ## Architecture
 
-```
-┌─────────┐     ┌───────────────┐     ┌────────────┐
-│  Nginx  │────▶│  Spring Boot  │────▶│ PostgreSQL │
-│  :80    │     │  :8080        │     │  :5432     │
-│         │     │               │     │            │
-│ React   │     │ Controller    │     │ expenses   │
-│ SPA     │     │ Service       │     │ (table)    │
-│ static  │     │ Repository    │     │            │
-└─────────┘     └───────────────┘     └────────────┘
+```mermaid
+graph LR
+  subgraph Client_Side ["Client Side"]
+    UI["React SPA (Vite)"]
+  end
+
+  subgraph Reverse_Proxy ["Reverse Proxy"]
+    NX["Nginx (:80)"]
+  end
+
+  subgraph Backend_Services ["Backend Services"]
+    SB["Spring Boot (:8080)"]
+  end
+
+  subgraph Data_Layer ["Data Layer"]
+    DB[("PostgreSQL (:5432)")]
+  end
+
+  UI <--> NX
+  NX <--> SB
+  SB <--> DB
 ```
 
 **Stack**: Java 21 · Spring Boot 3.3 · PostgreSQL 16 · React 18 · TypeScript · Vite · Docker Compose · Nginx
@@ -119,18 +131,34 @@ For a finance app, we **do not** use optimistic UI patterns. The user only sees 
 
 ---
 
-## Cloud Deployment (Render.com)
+## Detailed Setup Instructions
 
-This project is configured for one-click deployment using **Render Blueprints**.
+If you prefer to run the components manually (outside Docker) for debugging or development:
 
-### How to Deploy:
-1.  **Push to GitHub**: Push this repository to your account.
-2.  **Connect Render**: Go to [dashboard.render.com](https://dashboard.render.com/) → **Blueprints** → **New Blueprint Instance**.
-3.  **Connect Repo**: Select this repository.
-4.  **Deploy**: Render will read `render.yaml` and automatically provision:
-    -   A Managed PostgreSQL instance.
-    -   A Spring Boot Web Service (Backend).
-    -   A Static Site (Frontend) with automated API rewrites.
+### Prerequisites:
+- **Java**: JDK 17+
+- **Node.js**: v18+ & npm
+- **PostgreSQL**: v16+ running locally
+
+### 1. Database Setup
+1. Create a database named `expenses` in PostgreSQL.
+2. Update `server/src/main/resources/application.yml` with your local credentials if they differ from the defaults.
+
+### 2. Backend (Spring Boot)
+```bash
+cd server
+./mvnw clean install
+./mvnw spring-boot:run
+```
+The API will be available at `http://localhost:8080`.
+
+### 3. Frontend (React)
+```bash
+cd client
+npm install
+npm run dev
+```
+The UI will be available at `http://localhost:5173`. (Note: To use the Proxy, it's recommended to use the Docker setup which includes Nginx).
 
 ---
 
