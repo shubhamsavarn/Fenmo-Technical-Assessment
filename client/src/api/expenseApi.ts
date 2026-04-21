@@ -4,7 +4,7 @@
  * Design decisions:
  * 1. Returns ApiResult<T> tuple — forces explicit error handling (no silent catches)
  * 2. Automatically includes Idempotency-Key header for POST requests
- * 3. 10s timeout via AbortController
+ * 3. 60s timeout via AbortController (handles cloud cold starts)
  * 4. Maps HTTP errors to domain-specific ApiError types
  * 5. Never throws — all errors are returned as values
  */
@@ -19,7 +19,7 @@ import type {
 } from '../types/expense';
 
 const BASE_URL = (import.meta.env.VITE_API_URL as string) || '/api';
-const TIMEOUT_MS = 10_000;
+const TIMEOUT_MS = 60_000;
 
 // ── Private helpers ──────────────────────────────────────────
 
