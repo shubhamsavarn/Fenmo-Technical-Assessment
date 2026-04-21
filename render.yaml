@@ -45,11 +45,11 @@ services:
     rootDir: client
     envVars:
       - key: VITE_API_URL
-        value: https://expense-api.onrender.com/api
+        value: https://expense-api-cx20.onrender.com/api
     routes:
       - type: rewrite
         source: /api/*
-        destination: https://expense-api.onrender.com/api/*
+        destination: https://expense-api-cx20.onrender.com/api/*
       - type: rewrite
         source: /*
         destination: /index.html

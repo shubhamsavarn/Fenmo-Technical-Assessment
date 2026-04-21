@@ -2,7 +2,8 @@
 
 A production-quality full-stack expense tracking application built as a demonstration of software engineering practices applied to financial data handling.
 
-**Live Demo**: _[Deploying to Render via Blueprint...]_
+**Live Demo (Backend)**: https://expense-api-cx20.onrender.com/actuator/health
+**Live Demo (Frontend)**: _[Deploying with correct API URL...]_
 
 ## Quick Start
 
