@@ -31,7 +31,6 @@ services:
     runtime: static
     buildCommand: npm run build
     staticPublishPath: dist
-    plan: free
     # Root for the frontend is the client folder
     rootDir: client
     routes:
