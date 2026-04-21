@@ -26,11 +26,11 @@ services:
           property: password
 
   # === Frontend: React Static Site ===
-  - type: static
+  - type: web
     name: expense-ui
-    runtime: node
+    runtime: static
     buildCommand: npm run build
-    publishDir: dist
+    staticPublishPath: dist
     plan: free
     region: oregon
     # Root for the frontend is the client folder
