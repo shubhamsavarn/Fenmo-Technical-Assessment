@@ -4,7 +4,7 @@ services:
     name: expense-api
     runtime: docker
     dockerContext: server
-    dockerfilePath: Dockerfile
+    dockerfilePath: server/Dockerfile
     plan: free
     region: oregon
     healthCheckPath: /actuator/health
