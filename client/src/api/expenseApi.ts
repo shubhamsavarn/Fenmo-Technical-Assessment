@@ -18,7 +18,7 @@ import type {
   SortOption,
 } from '../types/expense';
 
-const BASE_URL = '/api';
+const BASE_URL = (import.meta.env.VITE_API_URL as string) || '/api';
 const TIMEOUT_MS = 10_000;
 
 // ── Private helpers ──────────────────────────────────────────

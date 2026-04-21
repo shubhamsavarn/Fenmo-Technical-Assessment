@@ -43,6 +43,9 @@ services:
     staticPublishPath: dist
     # Root for the frontend is the client folder
     rootDir: client
+    envVars:
+      - key: VITE_API_URL
+        value: https://expense-api.onrender.com/api
     routes:
       - type: rewrite
         source: /api/*
