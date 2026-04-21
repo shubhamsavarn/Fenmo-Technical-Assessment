@@ -7,15 +7,25 @@ services:
     dockerfilePath: server/Dockerfile
     plan: free
     region: oregon
-    healthCheckPath: /api/actuator/health
+    healthCheckPath: /actuator/health
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
       # The database service below automatically provides connection info
       - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://${EXPENSE_DB_HOST}:${EXPENSE_DB_PORT}/${EXPENSE_DB_NAME}
+      - key: EXPENSE_DB_HOST
         fromDatabase:
           name: expense-db
-          property: connectionString
+          property: host
+      - key: EXPENSE_DB_PORT
+        fromDatabase:
+          name: expense-db
+          property: port
+      - key: EXPENSE_DB_NAME
+        fromDatabase:
+          name: expense-db
+          property: database
       - key: SPRING_DATASOURCE_USERNAME
         fromDatabase:
           name: expense-db
