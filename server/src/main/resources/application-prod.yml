@@ -1,0 +1,22 @@
+# ==============================
+# Production Profile
+# All values from environment variables
+# ==============================
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+      idle-timeout: 300000
+      max-lifetime: 600000
+
+logging:
+  level:
+    com.expensetracker: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: '{"timestamp":"%d{ISO8601}","level":"%level","logger":"%logger{36}","msg":"%msg","traceId":"%X{traceId}"}%n'

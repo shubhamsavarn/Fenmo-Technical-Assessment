@@ -1,0 +1,85 @@
+# ============================================================
+# Expense Tracker — Docker Compose
+#
+# Usage:
+#   cp .env.example .env        # Set DB_PASSWORD
+#   docker compose up --build   # Start all services
+#
+# Architecture:
+#   nginx (:80) → Spring Boot (:8080) → PostgreSQL (:5432)
+#   Nginx serves React static files AND proxies /api/* to Spring Boot
+# ============================================================
+
+services:
+  # ── Database ──────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: expense_tracker
+      POSTGRES_USER: ${DB_USER:-expense_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-expense_pass}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-expense_user} -d expense_tracker"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    networks:
+      - internal
+    # Port NOT exposed to host — security best practice
+
+  # ── Backend (Spring Boot) ─────────────────────────────────
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/expense_tracker
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-expense_user}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-expense_pass}
+      JAVA_TOOL_OPTIONS: >-
+        -XX:MaxRAMPercentage=75.0
+        -XX:+UseG1GC
+        -XX:+ExitOnOutOfMemoryError
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    networks:
+      - internal
+
+  # ── Frontend + Reverse Proxy (Nginx) ──────────────────────
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+    depends_on:
+      server:
+        condition: service_healthy
+    networks:
+      - internal
+
+volumes:
+  pgdata:
+    driver: local
+
+networks:
+  internal:
+    driver: bridge

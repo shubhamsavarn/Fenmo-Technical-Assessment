@@ -1,0 +1,19 @@
+# ==============================
+# Dev Profile
+# ==============================
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/expense_tracker
+    username: expense_user
+    password: expense_pass
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    com.expensetracker: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
