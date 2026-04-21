@@ -2,7 +2,7 @@
 
 A production-quality full-stack expense tracking application built as a demonstration of software engineering practices applied to financial data handling.
 
-**Live Demo**: _[Deployed URL — to be updated after deployment]_
+**Live Demo**: _[Deploying to Render via Blueprint...]_
 
 ## Quick Start
 
@@ -105,7 +105,7 @@ For a finance app, we **do not** use optimistic UI patterns. The user only sees 
 | **No edit/delete** | Full CRUD with soft-delete (financial records should never hard-delete) |
 | **Basic rate limiting** (none currently) | Spring Boot rate limiter with Bucket4j or API gateway |
 | **No CI/CD** | GitHub Actions: lint → test → build → deploy |
-| **Manual deployment** | Railway/Render auto-deploy on push to `main` |
+| **Automated deployment** | Render Blueprint for 1-click stack provisioning |
 
 ## What I Intentionally Did NOT Do
 
@@ -115,6 +115,21 @@ For a finance app, we **do not** use optimistic UI patterns. The user only sees 
 - **No microservices** — Single bounded context. A monolith is the correct architecture.
 - **No event sourcing** — Append-only ledger is elegant but overkill for personal expense tracking
 - **No H2 in tests** — Testcontainers with real PostgreSQL. H2 doesn't support `GENERATED ALWAYS AS` or `ON CONFLICT`.
+
+---
+
+## Cloud Deployment (Render.com)
+
+This project is configured for one-click deployment using **Render Blueprints**.
+
+### How to Deploy:
+1.  **Push to GitHub**: Push this repository to your account.
+2.  **Connect Render**: Go to [dashboard.render.com](https://dashboard.render.com/) → **Blueprints** → **New Blueprint Instance**.
+3.  **Connect Repo**: Select this repository.
+4.  **Deploy**: Render will read `render.yaml` and automatically provision:
+    -   A Managed PostgreSQL instance.
+    -   A Spring Boot Web Service (Backend).
+    -   A Static Site (Frontend) with automated API rewrites.
 
 ---
 

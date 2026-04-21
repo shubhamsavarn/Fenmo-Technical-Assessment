@@ -2,7 +2,7 @@
 # Default Configuration
 # ==============================
 server:
-  port: 8080
+  port: ${PORT:8080}
   shutdown: graceful
 
 spring:

@@ -1,0 +1,49 @@
+services:
+  # === Backend: Spring Boot API ===
+  - type: web
+    name: expense-api
+    runtime: docker
+    dockerContext: .
+    dockerfilePath: server/Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /api/actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      # The database service below automatically provides connection info
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: expense-db
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: expense-db
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: expense-db
+          property: password
+
+  # === Frontend: React Static Site ===
+  - type: static
+    name: expense-ui
+    runtime: node
+    buildCommand: npm run build
+    publishDir: dist
+    plan: free
+    region: oregon
+    # Root for the frontend is the client folder
+    rootDir: client
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://expense-api.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: expense-db
+    plan: free
+    region: oregon
